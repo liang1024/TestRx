@@ -7,3 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+rxscheduler/libs/
+rxscheduler/src/main/res/drawable/
+rxsubscription/libs/
+rxsubscription/src/main/res/drawable/
