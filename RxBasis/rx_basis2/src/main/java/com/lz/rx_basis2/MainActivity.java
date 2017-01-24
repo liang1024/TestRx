@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +13,23 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private EditText mEdit_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mEdit_text = (EditText) findViewById(R.id.edit_text);
 
         //TODO 1.Merge:操作符，合并观察对象
         merge();
@@ -55,30 +60,281 @@ public class MainActivity extends AppCompatActivity {
         Buffer();
         //TODO 13.throttleFirst 操作符
         throttleFirst();
+        //TODO 14.distinct 过滤重复的数据
+        distinct();
+        //TODO 15.distinctUntilChanged() 过滤连续重复的数据
+        distinctUntilChanged();
+        //TODO 16.debounce() 操作符
+        debounce();
+        //TODO 17.doOnSubscribe() 使用场景： 可以在事件发出之前做一些初始化的工作，比如弹出进度条等等
+        doOnsubscribe();
+        //TODO 18.range(int start, int count)   输出范围内数据
+        range();
+        //TODO 19.defer() defer是在订阅者订阅时才创建Observable，此时才进行真正的赋值操作。
+        defer();
+    }
+
+    private String i = "1";
+
+    /**
+     * 19.defer :
+     * 可以看到，just操作符是在创建Observable就进行了赋值操作，而defer是在订阅者订阅时才创建Observable，此时才进行真正的赋值操作。
+     */
+    private void defer() {
+        i = "2";
+
+        /**
+         * 创建 defer
+         */
+        Observable<String> defer = Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                return Observable.just(i);
+            }
+        });
+        /**
+         * 创建just
+         */
+        Observable<String> just = Observable.just(i);
+
+
+        i = "3";
+        /**
+         * 打印 just
+         */
+        just.subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Log.e(TAG, "defer-- just:" + s);
+            }
+        });
+        /**
+         *  打印defer
+         */
+        defer.subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Log.e(TAG, "defer-- defer:" + s);
+            }
+        });
+
+        //        结果:
+        //        01-24 10:27:21.933 7217-7217/com.lz.rx_basis2 E/MainActivity: defer-- just:2
+        //        01-24 10:27:21.936 7217-7217/com.lz.rx_basis2 E/MainActivity: defer-- defer:3
+
+    }
+
+    /**
+     * 18.range()    如果将第二个参数设为0，将导致Observable不发射任何数据（如果设置为负数，会抛异常）
+     */
+    private void range() {
+        /**
+         * 参数1:起始值,参数2:范围的数据的数目    (可选)参数3:执行的线程
+         */
+        Observable.range(10, 9/*,AndroidSchedulers.mainThread()*/).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.e(TAG, "range-- " + integer);
+            }
+        });
+        //        结果：
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 10
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 11
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 12
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 13
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 14
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 15
+        //        01-24 10:11:33.948 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 16
+        //        01-24 10:11:33.949 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 17
+        //        01-24 10:11:33.949 6928-6928/com.lz.rx_basis2 E/MainActivity: range-- 18
+
+    }
+
+    /**
+     * 17.doOnSubscribe()
+     * 使用场景： 可以在事件发出之前做一些初始化的工作，比如弹出进度条等等
+     */
+    private void doOnsubscribe() {
+        /**
+         *    1.doOnSubscribe() 默认运行在事件产生的线程里面，然而事件产生的线程一般都会运行在 io 线程里。那么这个时候做一些，更新UI的操作，是线程不安全的。
+         *    所以如果事件产生的线程是io线程，但是我们又要在doOnSubscribe() 更新UI ， 这时候就需要线程切换。
+         *    2.如果在 doOnSubscribe() 之后有 subscribeOn() 的话，它将执行在离它最近的 subscribeOn() 所指定的线程。
+         *    3.subscribeOn() 事件产生的线程 ； observeOn() : 事件消费的线程
+         */
+        /**
+         * 同一条线程时,会先执行被订阅者再执行订阅，不同线程时，会被订阅按照顺序执行
+         */
+
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                Log.e(TAG, "doOnSubscribe-- 创建了事件1");
+                Log.e(TAG, "doOnSubscribe-- 创建了事件2");
+                subscriber.onNext("doOnsubscribe-- 执行了onNext");
+                Log.e(TAG, "doOnSubscribe-- 创建了事件3");
+
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread())//事件订阅的线程
+                .observeOn(AndroidSchedulers.mainThread())//事件消费的线程
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Log.e(TAG, "doOnSubscribe-- onNext:" + s);
+                    }
+                });
+        //结果
+        //        01-24 09:59:16.736 6097-6097/com.lz.rx_basis2 E/MainActivity: doOnSubscribe-- 创建了事件
+        //        01-24 09:59:16.911 6097-6097/com.lz.rx_basis2 E/MainActivity: doOnSubscribe-- onNext:doOnsubscribe-- 执行了onNext
+    }
+
+    /**
+     * 16.debounce(); 操作符
+     */
+    private void debounce() {
+       /* final ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        mEdit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.e(TAG, "debounce-- 文本改变之前");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e(TAG, "debounce-- 文本改变中");
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e(TAG, "debounce-- 文本改变之后");
+                Observable.from(list).debounce(5000, TimeUnit.SECONDS).subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Log.e(TAG, "debounce-- 发送了:" + s);
+                    }
+                });
+            }
+        });*/
+
+    }
+
+    /**
+     * 15.distinctUntilChanged  过滤掉连续重复的数据
+     */
+    private void distinctUntilChanged() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("1");
+        list.add("2");
+        list.add("2");
+        list.add("2");
+        list.add("1");
+        list.add("1");
+        list.add("3");
+        list.add("3");
+        list.add("4");
+        list.add("4");
+        list.add("2");
+        list.add("2");
+        list.add("1");
+        list.add("1");
+        Observable.from(list)
+                .distinctUntilChanged()
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Log.e(TAG, "distinctUntilChanged--" + s);
+                    }
+                });
+        // 结果：
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--1
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--2
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--1
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--3
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--4
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--2
+        //        01-24 08:00:46.977 3969-3969/com.lz.rx_basis2 E/MainActivity: distinctUntilChanged--1
+
+
+    }
+
+    /**
+     * 14.distinct 过滤重复的数据
+     */
+    private void distinct() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("1");
+        list.add("3");
+        list.add("4");
+        list.add("2");
+        list.add("1");
+        list.add("1");
+        Observable
+                .from(list)
+                .distinct() //过滤重复的数据
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Log.e(TAG, "distinct--" + s);
+                    }
+                });
+        //        结果:
+        //        01-24 07:45:37.286 3633-3633/com.lz.rx_basis2 E/MainActivity: distinct--1
+        //        01-24 07:45:37.286 3633-3633/com.lz.rx_basis2 E/MainActivity: distinct--2
+        //        01-24 07:45:37.286 3633-3633/com.lz.rx_basis2 E/MainActivity: distinct--3
+        //        01-24 07:45:37.286 3633-3633/com.lz.rx_basis2 E/MainActivity: distinct--4
 
     }
 
     /**
      * 13.throttleFirst 操作符
+     * 在一段时间内，只取第一个事件，然后其他事件都丢弃。
+     * 使用场景：1、button按钮防抖操作，防连续点击   2、百度关键词联想，在一段时间内只联想一次，防止频繁请求服务器
      */
     private void throttleFirst() {
-
+        /**
+         * interval(1, TimeUnit.SECONDS)         每秒打印一次
+         * throttleFirst(2, TimeUnit.SECONDS)   截取间隔2秒的值
+         */
         Observable.interval(1, TimeUnit.SECONDS)
-                .throttleFirst(3, TimeUnit.SECONDS)
+                .throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
                         Log.e(TAG, "throttleFirst --" + aLong);
                     }
                 });
+        //       结果：
+        //        01-24 07:34:46.208 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst --0
+        //        01-24 07:34:49.207 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst --3
+        //        01-24 07:34:51.207 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst --5
+        //        01-24 07:34:53.207 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst --7
+        //        01-24 07:34:55.207 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst-- 9
+        //        01-24 07:34:58.208 3457-3476/com.lz.rx_basis2 E/MainActivity: throttleFirst --12
 
     }
 
     /**
      * 12.Buffer操作符
+     * 使用场景：一个按钮每点击3次，弹出一个toast
      */
     private void Buffer() {
-        //        Buffer( int n )      把n个数据打成一个list包，然后再次发送。
+        //        Buffer( int n )  把n个数据打成一个list包，然后再次发送。
         //        Buffer( int n , int skip)   把n个数据打成一个list包，然后跳过第skip个数据。
 
         // 使用场景：一个按钮每点击3次,弹出一个Toast
@@ -151,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 11.doOnNext()操作符,在每次OnNext()方法被调用前执行
+     * 使用场景：从网络请求数据，在数据被展示前，缓存到本地
      */
     private void doOnNext() {
         //使用场景：从网络请求数据，在数据被展示前，缓存到本地
