@@ -5,13 +5,15 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="E:\AndroidStudio2-2-3\gradle\gradle-2.14.1" />
+        <option name="gradleHome" value="E:\AndroidStudio\gradle\gradle-2.14.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/rx_basis1" />
             <option value="$PROJECT_DIR$/rx_basis2" />
             <option value="$PROJECT_DIR$/rx_rxbus" />
+            <option value="$PROJECT_DIR$/rxscheduler" />
+            <option value="$PROJECT_DIR$/rxsubscription" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
