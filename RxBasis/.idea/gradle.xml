@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/rx_basis1" />
             <option value="$PROJECT_DIR$/rx_basis2" />
+            <option value="$PROJECT_DIR$/rx_rxbinding" />
             <option value="$PROJECT_DIR$/rx_rxbus" />
             <option value="$PROJECT_DIR$/rx_rxlifecycle" />
             <option value="$PROJECT_DIR$/rxscheduler" />

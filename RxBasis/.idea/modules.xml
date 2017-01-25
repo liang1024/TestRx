@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/RxBasis.iml" filepath="$PROJECT_DIR$/RxBasis.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_basis1/rx_basis1.iml" filepath="$PROJECT_DIR$/rx_basis1/rx_basis1.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_basis2/rx_basis2.iml" filepath="$PROJECT_DIR$/rx_basis2/rx_basis2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rx_rxbinding/rx_rxbinding.iml" filepath="$PROJECT_DIR$/rx_rxbinding/rx_rxbinding.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_rxbus/rx_rxbus.iml" filepath="$PROJECT_DIR$/rx_rxbus/rx_rxbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_rxlifecycle/rx_rxlifecycle.iml" filepath="$PROJECT_DIR$/rx_rxlifecycle/rx_rxlifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxscheduler/rxscheduler.iml" filepath="$PROJECT_DIR$/rxscheduler/rxscheduler.iml" />
