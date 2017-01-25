@@ -1,1 +1,1 @@
-include ':rx_basis1', ':rx_rxbus', ':rx_basis2', ':rxsubscription', ':rxscheduler'
+include ':rx_basis1', ':rx_rxbus', ':rx_basis2', ':rxsubscription', ':rxscheduler', ':rx_rxlifecycle'

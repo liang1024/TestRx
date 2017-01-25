@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != mSubscription && mSubscription.isUnsubscribed()) {
+        if (null != mSubscription) {
             Log.e(TAG, "解绑了");
             mSubscription.unsubscribe();
         }
