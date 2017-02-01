@@ -53,6 +53,7 @@ public class BlankFragment extends RxFragment {
                         Log.e(TAG, "call:" + s);
                     }
                 });
+
         //结果： 添加compse之后，执行onPause方法之后将取消Observable的订阅
 
         //        未加compose

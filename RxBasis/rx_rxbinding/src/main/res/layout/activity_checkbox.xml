@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/activity_checkbox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,31 +10,22 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.lz.rx_rxbinding.MainActivity">
+    tools:context="com.lz.rx_rxbinding.CheckboxActivity">
 
     <Button
-        android:id="@+id/bt_button"
+        android:id="@+id/bt_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1.Button"/>
+        android:text="点我进行登陆"
+        android:textColor="#000"/>
 
-    <Button
-        android:id="@+id/bt_listview"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2.listview示例"/>
-
-    <Button
-        android:id="@+id/bt_checkbox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="3.CheckBox示例"/>
-
-    <Button
-        android:id="@+id/bt_debounce"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="4.debounce示例-关键词联想"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="我是用户协议"/>
 
 
 </LinearLayout>

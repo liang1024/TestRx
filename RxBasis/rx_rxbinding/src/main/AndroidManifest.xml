@@ -15,6 +15,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".CheckboxActivity">
+        </activity>
+        <activity android:name=".ListViewActivity">
+        </activity>
+        <activity android:name=".ButtonActivity">
+        </activity>
+        <activity android:name=".DebounceActivity">
+        </activity>
     </application>
 
 </manifest>

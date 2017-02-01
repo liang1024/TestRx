@@ -9,8 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/rx_rxbus/rx_rxbus.iml" filepath="$PROJECT_DIR$/rx_rxbus/rx_rxbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_rxlifecycle/rx_rxlifecycle.iml" filepath="$PROJECT_DIR$/rx_rxlifecycle/rx_rxlifecycle.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxscheduler/rxscheduler.iml" filepath="$PROJECT_DIR$/rxscheduler/rxscheduler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rxscheduler/rxscheduler.iml" filepath="$PROJECT_DIR$/rxscheduler/rxscheduler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rxsubscription/rxsubscription.iml" filepath="$PROJECT_DIR$/rxsubscription/rxsubscription.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxsubscription/rxsubscription.iml" filepath="$PROJECT_DIR$/rxsubscription/rxsubscription.iml" />
     </modules>
   </component>
